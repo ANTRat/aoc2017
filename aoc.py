@@ -83,6 +83,28 @@ def day3(input, part2=False):
     return manhattan_distance((0, 0), g[int(input)])
 
 
+def day4(passwords, part2=False):
+    def isvalid(s, part2):
+        uniq = set()
+        uniqs = set()
+        words = s.split()
+        for w in words:
+            sortw = ''.join(sorted(w))
+            if w in uniq:
+                return False
+            if sortw in uniqs and part2:
+                return False
+            uniq.add(w)
+            uniqs.add(sortw)
+        return True
+
+    valid = 0
+    for p in passwords.split('\n'):
+        if isvalid(p, part2):
+            valid += 1
+    return valid
+
+
 def run():
     tests = {
         day1: (
@@ -96,6 +118,10 @@ def run():
         day3: (
             {'1': 0, '12': 3, '23': 2, '1024': 31},
             {}
+        ),
+        day4: (
+            {'aa bb cc dd ee\naa bb cc dd aa\naa bb cc dd aaa': 2},
+            {'abcde fghij\nabcde xyz ecdab\na ab abc abd abf abj\niiii oiii ooii oooi oooo\noiii ioii iioi iiio': 3}
         )
     }
 
