@@ -31,6 +31,58 @@ def day2(spreadsheet, part2=False):
     return ret
 
 
+def day3(input, part2=False):
+    def right(x, y):
+        return x + 1, y
+
+    def up(x, y):
+        return x, y + 1
+
+    def left(x, y):
+        return x - 1, y
+
+    def down(x, y):
+        return x, y - 1
+
+    def manhattan_distance(x, y):
+        return sum(abs(a - b) for a, b in zip(x, y))
+
+    def nearby(x, y):
+        n = 0
+        around = [(x - 1, y + 1), (x, y + 1), (x + 1, y + 1), (x - 1, y), (x + 1, y), (x - 1, y - 1), (x, y - 1),
+                  (x + 1, y - 1)]
+        for pos in around:
+            if pos in other_grid:
+                n += other_grid[pos]
+        return n
+
+    order = itertools.cycle([right, up, left, down])
+    x = 0
+    y = 0
+    g = {1: (0, 0)}
+    other_grid = {(0, 0): 1}
+    times_to_move = 1
+    n = 1
+    while True:
+        for _ in range(2):
+            move = next(order)
+            for _ in range(times_to_move):
+                if n > int(input):
+                    break
+                x, y = move(x, y)
+                n += 1
+                g[n] = (x, y)
+                near = nearby(x, y)
+                other_grid[(x, y)] = near
+                if near > int(input) and part2:
+                    return near
+                # print(n,x,y)
+        times_to_move += 1
+        if n > int(input):
+            break
+    return manhattan_distance((0, 0), g[int(input)])
+
+
 def run():
     tests = {
         day1: (
@@ -40,6 +92,10 @@ def run():
         day2: (
             {"5 1 9 5\n7 5 3\n2 4 6 8": 18},
             {"5 9 2 8\n9 4 7 3\n3 8 6 5": 9},
+        ),
+        day3: (
+            {'1': 0, '12': 3, '23': 2, '1024': 31},
+            {}
         )
     }
 
