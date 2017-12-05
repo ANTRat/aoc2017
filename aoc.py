@@ -97,12 +97,28 @@ def day4(passwords, part2=False):
             uniq.add(w)
             uniqs.add(sortw)
         return True
-
     valid = 0
     for p in passwords.split('\n'):
         if isvalid(p, part2):
             valid += 1
     return valid
+
+
+def day5(maze, part2=False):
+    maze = list(map(int, maze.split()))
+    steps = 0
+    n = 0
+    try:
+        while True:
+            old_n = n
+            n += maze[n]
+            if maze[old_n] >= 3 and part2:
+                maze[old_n] += -1
+            else:
+                maze[old_n] += 1
+            steps += 1
+    except IndexError:
+        return steps
 
 
 def run():
@@ -122,6 +138,10 @@ def run():
         day4: (
             {'aa bb cc dd ee\naa bb cc dd aa\naa bb cc dd aaa': 2},
             {'abcde fghij\nabcde xyz ecdab\na ab abc abd abf abj\niiii oiii ooii oooi oooo\noiii ioii iioi iiio': 3}
+        ),
+        day5: (
+            {'0 3 0 1 -3': 5},
+            {'0 3 0 1 -3': 10}
         )
     }
 
