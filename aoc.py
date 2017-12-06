@@ -121,6 +121,32 @@ def day5(maze, part2=False):
         return steps
 
 
+def day6(blocks, part2=False):
+    blocks = list(map(int, blocks.split()))
+    states = set(tuple(blocks))
+    loops = 0
+    wanted = False
+    old_loops = 0
+    while True:
+        num = max(blocks)
+        start = blocks.index(num)
+        blocks[start] = 0
+        for x in range(start + 1, start + num + 1):
+            blocks[x % len(blocks)] += 1
+        loops += 1
+        if tuple(blocks) in states:
+            if not part2:
+                return loops
+            else:
+                if not wanted:
+                    wanted = list(blocks)
+                    old_loops = loops
+                else:
+                    if blocks == wanted:
+                        return loops - old_loops
+        states.add(tuple(blocks))
+
+
 def run():
     tests = {
         day1: (
@@ -142,6 +168,10 @@ def run():
         day5: (
             {'0 3 0 1 -3': 5},
             {'0 3 0 1 -3': 10}
+        ),
+        day6: (
+            {'0 2 7 0': 5},
+            {'0 2 7 0': 4}
         )
     }
 
