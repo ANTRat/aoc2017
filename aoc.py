@@ -149,6 +149,32 @@ def day6(blocks, part2=False):
         states.add(tuple(blocks))
 
 
+def day7(input, part2=False):
+    ends = {}
+    tower = {}
+    reverse_tower = {}
+    weights = {}
+    for line in input.split('\n'):
+        line = line.split(' ')
+        n = line[0]
+        weights[n] = int(line[1][1:-1])
+        if len(line) > 2:
+            c = ''.join(line[3:]).split(',')
+            tower[n] = c
+            for cn in c:
+                reverse_tower[cn] = n
+        else:
+            ends[n] = []
+    for program in ends:
+        step = program
+        while step in reverse_tower:
+            step = reverse_tower[step]
+            ends[program].append(step)
+        if not part2:
+            return step
+    return False
+
+
 def day8(input, part2=False):
     registers = collections.defaultdict(int)
     max_reg = 0
@@ -188,34 +214,42 @@ def day8(input, part2=False):
 
 def run():
     tests = {
-        day1: (
-            {'1122': 3, '1111': 4, '1234': 0, '91212129': 9},
-            {'1212': 6, '1221': 0, '123425': 4, '123123': 12, '12131415': 4}
+        # day1: (
+        #     {'1122': 3, '1111': 4, '1234': 0, '91212129': 9},
+        #     {'1212': 6, '1221': 0, '123425': 4, '123123': 12, '12131415': 4}
+        # ),
+        # day2: (
+        #     {"5 1 9 5\n7 5 3\n2 4 6 8": 18},
+        #     {"5 9 2 8\n9 4 7 3\n3 8 6 5": 9},
+        # ),
+        # day3: (
+        #     {'1': 0, '12': 3, '23': 2, '1024': 31},
+        #     {}
+        # ),
+        # day4: (
+        #     {'aa bb cc dd ee\naa bb cc dd aa\naa bb cc dd aaa': 2},
+        #     {'abcde fghij\nabcde xyz ecdab\na ab abc abd abf abj\niiii oiii ooii oooi oooo\noiii ioii iioi iiio': 3}
+        # ),
+        # day5: (
+        #     {'0 3 0 1 -3': 5},
+        #     {'0 3 0 1 -3': 10}
+        # ),
+        # day6: (
+        #     {'0 2 7 0': 5},
+        #     {'0 2 7 0': 4}
+        # ),
+        day7: (
+            {'pbga (66)\nxhth (57)\nebii (61)\nhavc (66)\nktlj (57)\nfwft (72) -> ktlj, cntj, xhth\nqoyq (66)\npadx ('
+             '45) -> pbga, havc, qoyq\ntknk (41) -> ugml, padx, fwft\njptl (61)\nugml (68) -> gyxo, ebii, jptl\ngyxo '
+             '(61)\ncntj (57)': 'tknk'},
+            {'pbga (66)\nxhth (57)\nebii (61)\nhavc (66)\nktlj (57)\nfwft (72) -> ktlj, cntj, xhth\nqoyq (66)\npadx ('
+             '45) -> pbga, havc, qoyq\ntknk (41) -> ugml, padx, fwft\njptl (61)\nugml (68) -> gyxo, ebii, jptl\ngyxo '
+             '(61)\ncntj (57)': 60}
         ),
-        day2: (
-            {"5 1 9 5\n7 5 3\n2 4 6 8": 18},
-            {"5 9 2 8\n9 4 7 3\n3 8 6 5": 9},
-        ),
-        day3: (
-            {'1': 0, '12': 3, '23': 2, '1024': 31},
-            {}
-        ),
-        day4: (
-            {'aa bb cc dd ee\naa bb cc dd aa\naa bb cc dd aaa': 2},
-            {'abcde fghij\nabcde xyz ecdab\na ab abc abd abf abj\niiii oiii ooii oooi oooo\noiii ioii iioi iiio': 3}
-        ),
-        day5: (
-            {'0 3 0 1 -3': 5},
-            {'0 3 0 1 -3': 10}
-        ),
-        day6: (
-            {'0 2 7 0': 5},
-            {'0 2 7 0': 4}
-        ),
-        day8: (
-            {'b inc 5 if a > 1\na inc 1 if b < 5\nc dec -10 if a >= 1\nc inc -20 if c == 10': 1},
-            {'b inc 5 if a > 1\na inc 1 if b < 5\nc dec -10 if a >= 1\nc inc -20 if c == 10': 10}
-        )
+        # day8: (
+        #     {'b inc 5 if a > 1\na inc 1 if b < 5\nc dec -10 if a >= 1\nc inc -20 if c == 10': 1},
+        #     {'b inc 5 if a > 1\na inc 1 if b < 5\nc dec -10 if a >= 1\nc inc -20 if c == 10': 10}
+        # )
     }
 
     for day in tests:
