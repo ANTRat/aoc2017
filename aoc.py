@@ -1,3 +1,4 @@
+import collections
 import itertools
 import os
 
@@ -97,6 +98,7 @@ def day4(passwords, part2=False):
             uniq.add(w)
             uniqs.add(sortw)
         return True
+
     valid = 0
     for p in passwords.split('\n'):
         if isvalid(p, part2):
@@ -147,6 +149,43 @@ def day6(blocks, part2=False):
         states.add(tuple(blocks))
 
 
+def day8(input, part2=False):
+    registers = collections.defaultdict(int)
+    max_reg = 0
+
+    def do_test(a, check, b):
+        if check == '>':
+            return a > b
+        elif check == '<':
+            return a < b
+        elif check == '>=':
+            return a >= b
+        elif check == '==':
+            return a == b
+        elif check == '<=':
+            return a <= b
+        elif check == '!=':
+            return a != b
+        else:
+            print(check)
+            raise Exception('unknown check')
+
+    for line in input.split('\n'):
+        reg, op, dif, _, test, cmp, val = line.split(' ')
+        dif = int(dif)
+        val = int(val)
+        if do_test(registers[test], cmp, val):
+            if op == 'inc':
+                registers[reg] += dif
+            elif op == 'dec':
+                registers[reg] -= dif
+        max_reg = max(max_reg, max(registers.values()))
+    if not part2:
+        return max(registers.values())
+    else:
+        return max_reg
+
+
 def run():
     tests = {
         day1: (
@@ -172,6 +211,10 @@ def run():
         day6: (
             {'0 2 7 0': 5},
             {'0 2 7 0': 4}
+        ),
+        day8: (
+            {'b inc 5 if a > 1\na inc 1 if b < 5\nc dec -10 if a >= 1\nc inc -20 if c == 10': 1},
+            {'b inc 5 if a > 1\na inc 1 if b < 5\nc dec -10 if a >= 1\nc inc -20 if c == 10': 10}
         )
     }
 
