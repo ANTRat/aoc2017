@@ -172,7 +172,36 @@ def day7(input, part2=False):
             ends[program].append(step)
         if not part2:
             return step
-    return False
+    # noinspection PyUnboundLocalVariable
+    bottom = step
+    total_weights = {}
+
+    def get_weight(node):
+        weight = 0
+        weight += weights[node]
+        if node in tower:
+            for child in tower[node]:
+                weight += get_weight(child)
+        return weight
+
+    for w in weights:
+        total_weights[w] = get_weight(w)
+    smallest = bottom
+    smallest_w = total_weights[smallest]
+    for t in tower:
+        t_weights = [total_weights[x] for x in tower[t]]
+        if t_weights != [t_weights[0]] * len(t_weights):
+            if total_weights[t] < smallest_w:
+                smallest = t
+                smallest_w = total_weights[t]
+    ws = [[child, weights[child], total_weights[child]] for child in tower[smallest]]
+    # noinspection PyArgumentList
+    b = collections.Counter([x[2] for x in ws])
+    good = b.most_common()[0][0]
+    bad = b.most_common()[-1][0]
+    for x in ws:
+        if x[2] == bad:
+            return x[1] + (good - bad)
 
 
 def day8(input, part2=False):
