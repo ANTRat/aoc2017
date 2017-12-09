@@ -241,6 +241,47 @@ def day8(input, part2=False):
         return max_reg
 
 
+def day9(input, part2=False):
+    def process(s, part2):
+        ignore_next = False
+        discard = False
+        for char in s:
+            if ignore_next:
+                ignore_next = False
+                continue
+            if char == '!':
+                ignore_next = True
+                continue
+
+            if char == '<' and not discard:
+                discard = True
+                continue
+
+            if char == '>' and discard:
+                discard = False
+                continue
+
+            if not discard and not part2:
+                yield char
+            if discard and part2:
+                yield char
+
+    depth = 0
+    score = 0
+    discarded = []
+    for c in process(input, part2):
+        discarded.append(c)
+        if c == '{':
+            depth += 1
+            score += depth
+        elif c == '}':
+            depth -= 1
+
+    if not part2:
+        return score
+    return len(discarded)
+
+
 def run():
     tests = {
         # day1: (
@@ -267,18 +308,39 @@ def run():
         #     {'0 2 7 0': 5},
         #     {'0 2 7 0': 4}
         # ),
-        day7: (
-            {'pbga (66)\nxhth (57)\nebii (61)\nhavc (66)\nktlj (57)\nfwft (72) -> ktlj, cntj, xhth\nqoyq (66)\npadx ('
-             '45) -> pbga, havc, qoyq\ntknk (41) -> ugml, padx, fwft\njptl (61)\nugml (68) -> gyxo, ebii, jptl\ngyxo '
-             '(61)\ncntj (57)': 'tknk'},
-            {'pbga (66)\nxhth (57)\nebii (61)\nhavc (66)\nktlj (57)\nfwft (72) -> ktlj, cntj, xhth\nqoyq (66)\npadx ('
-             '45) -> pbga, havc, qoyq\ntknk (41) -> ugml, padx, fwft\njptl (61)\nugml (68) -> gyxo, ebii, jptl\ngyxo '
-             '(61)\ncntj (57)': 60}
-        ),
+        # day7: (
+        #     {'pbga (66)\nxhth (57)\nebii (61)\nhavc (66)\nktlj (57)\nfwft (72) -> ktlj, cntj, xhth\nqoyq (66)\npadx ('
+        #      '45) -> pbga, havc, qoyq\ntknk (41) -> ugml, padx, fwft\njptl (61)\nugml (68) -> gyxo, ebii, jptl\ngyxo '
+        #      '(61)\ncntj (57)': 'tknk'},
+        #     {'pbga (66)\nxhth (57)\nebii (61)\nhavc (66)\nktlj (57)\nfwft (72) -> ktlj, cntj, xhth\nqoyq (66)\npadx ('
+        #      '45) -> pbga, havc, qoyq\ntknk (41) -> ugml, padx, fwft\njptl (61)\nugml (68) -> gyxo, ebii, jptl\ngyxo '
+        #      '(61)\ncntj (57)': 60}
+        # ),
         # day8: (
         #     {'b inc 5 if a > 1\na inc 1 if b < 5\nc dec -10 if a >= 1\nc inc -20 if c == 10': 1},
         #     {'b inc 5 if a > 1\na inc 1 if b < 5\nc dec -10 if a >= 1\nc inc -20 if c == 10': 10}
         # )
+        day9: (
+            {
+                '{}': 1,
+                '{{{}}}': 6,
+                '{{},{}}': 5,
+                '{{{},{},{{}}}}': 16,
+                '{<a>,<a>,<a>,<a>}': 1,
+                '{{<ab>},{<ab>},{<ab>},{<ab>}}': 9,
+                '{{<!!>},{<!!>},{<!!>},{<!!>}}': 9,
+                '{{<a!>},{<a!>},{<a!>},{<ab>}}': 3
+            },
+            {
+                '<>': 0,
+                '<random characters>': 17,
+                '<<<<>': 3,
+                '<{!>}>': 2,
+                '<!!>': 0,
+                '<!!!>>': 0,
+                '<{o"i!a,<{i<a>': 10
+            }
+        )
     }
 
     for day in tests:
